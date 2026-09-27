@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/bin/data/bebe.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/bin/data/contrat.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/bin/data/doctrine_migration_versions.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/bin/data/fiche.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/bin/data/ligne_fiche.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/bin/data/messenger_messages.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/bin/data/nounou.sql" dialect="GenericSQL" />
+  </component>
+</project>

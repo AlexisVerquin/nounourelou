@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+        {{ form_start(form) }}
+            <div class="creation-fiche-form">
+                <div>
+                    {{ form_row(form.date_debut) }}
+                    {{ form_row(form.date_fin) }}
+                </div>
+                <div>
+                    {{ form_row(form.heures_normal_mensuel) }}
+                    {{ form_row(form.heures_majorees_mensuel) }}
+                    {{ form_row(form.montant_deduction_periode_abs) }}
+                </div>
+                <div>
+                    {{ form_row(form.montant_divers) }}
+                    {{ form_row(form.montant_conges) }}
+                </div>
+                <div>
+                    {{ form_row(form.conge_date_start) }}
+                    {{ form_row(form.conge_date_end) }}
+                </div>
+            </div>
+            <div
+                id="ligne-fiches-list"
+                class="main-collection-type"
+                data-controller="collection"
+                data-collection-index-value="{{ form.ligneFiches|length }}"
+            >
+                <button
+                    type="button"
+                    data-action="collection#add"
+                >
+                    Ajouter une ligne
+                </button>
+                <table data-collection-target="list">
+                    <tr>
+                        <td>Date</td>
+                        <td>Heure Normal</td>
+                        <td>Heure sup</td>
+                        <td>Heure Majorées</td>
+                        <td>actions</td>
+                    </tr>
+                    {% for ligneFiche in form.ligneFiches %}
+                        <tr data-collection-target="item">
+                            <td>{{ form_widget(ligneFiche.date) }}</td>
+                            <td>{{ form_widget(ligneFiche.heure_normal_jour) }}</td>
+                            <td>{{ form_widget(ligneFiche.heure_compl_jour) }}</td>
+                            <td>{{ form_widget(ligneFiche.heure_majorees_jour) }}</td>
+                            <td><button type="button" data-action="collection#remove">Supprimer</button></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                {# Template caché utilisé pour générer les nouvelles lignes en JS, avec la bonne structure #}
+                <template data-collection-target="template">
+                    <tr data-collection-target="item">
+                        <td>{{ form_widget(form.ligneFiches.vars.prototype.date) }}</td>
+                        <td>{{ form_widget(form.ligneFiches.vars.prototype.heure_normal_jour) }}</td>
+                        <td>{{ form_widget(form.ligneFiches.vars.prototype.heure_compl_jour) }}</td>
+                        <td>{{ form_widget(form.ligneFiches.vars.prototype.heure_majorees_jour) }}</td>
+                        <td><button type="button" data-action="collection#remove">Supprimer</button></td>
+                    </tr>
+                </template>
+
+
+            </div>
+    <div class="form-actions">
+
+        <button type="submit" class="btn-submit">Valider</button>
+    </div>
+
+
+
+        {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,1 @@
+INSERT INTO `bebe` (`id`, `fullname_parent`, `adress`, `postalcode`, `city`, `num_employeur`, `fullname_child`, `birthdate`) VALUES (1, 'Verquin Alexis / Michel Hélène', '3b rue du Plessis', '44880', 'Sautron', 'Y3864114880004', 'Verquin Michel Achille', '2024-11-04 00:00:00');

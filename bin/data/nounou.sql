@@ -1,0 +1,1 @@
+INSERT INTO `nounou` (`id`, `lastname`, `firstname`, `adress`, `postalcode`, `city`, `num_pajeemploi`, `start_date`, `qualification`, `contrat_type`, `num_secu`) VALUES (1, 'Sylvestre', 'Véronique', '28 rue Alphonse de Lamartine', '44880', 'Sautron', '516524', '2025-02-03 00:00:00', 'Assistante maternelle', 'CDI', '266034410946833');

@@ -1,0 +1,158 @@
+services:
+    php:
+        build:
+            context: .
+            args:
+                USER_ID: ${UID:-1000}
+                GROUP_ID: ${GID:-1000}
+        container_name: nounourelou_php
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        environment:
+            APP_ENV: dev
+            SERVER_NAME: localhost
+            MAILER_DSN: smtp://mailhog:1025
+            MESSENGER_TRANSPORT_DSN: amqp://symfony:symfony@rabbitmq:5672/%2f
+        volumes:
+            - ./:/app
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+            database:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+            mailhog:
+                condition: service_started
+        networks:
+            - nounourelou
+
+    database:
+        image: mysql:8.4
+        container_name: nounourelou_mysql
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: app
+            MYSQL_USER: symfony
+            MYSQL_PASSWORD: symfony
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "3306:3306"
+        volumes:
+            - database_data:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 20s
+        networks:
+            - nounourelou
+
+    redis:
+        image: redis:7-alpine
+        container_name: nounourelou_redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
+        networks:
+            - nounourelou
+
+    rabbitmq:
+        image: rabbitmq:4-management-alpine
+        container_name: nounourelou_rabbitmq
+        restart: unless-stopped
+        environment:
+            RABBITMQ_DEFAULT_USER: symfony
+            RABBITMQ_DEFAULT_PASS: symfony
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        volumes:
+            - rabbitmq_data:/var/lib/rabbitmq
+        healthcheck:
+            test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+        networks:
+            - nounourelou
+
+    messenger:
+        build:
+            context: .
+            args:
+                USER_ID: ${UID:-1000}
+                GROUP_ID: ${GID:-1000}
+        container_name: nounourelou_messenger
+        restart: unless-stopped
+        command: php bin/console messenger:consume async --time-limit=3600 -vv
+        environment:
+            APP_ENV: dev
+            MAILER_DSN: smtp://mailhog:1025
+            MESSENGER_TRANSPORT_DSN: amqp://symfony:symfony@rabbitmq:5672/%2f/messages
+        volumes:
+            - ./:/app
+        depends_on:
+            rabbitmq:
+                condition: service_healthy
+            database:
+                condition: service_healthy
+            mailhog:
+                condition: service_started
+        networks:
+            - nounourelou
+
+    mailhog:
+        image: mailhog/mailhog
+        container_name: nounourelou_mailhog
+        restart: unless-stopped
+        ports:
+            - "1025:1025"   # SMTP
+            - "8025:8025"   # interface web
+        networks:
+            - nounourelou
+
+    cloudbeaver:
+        image: dbeaver/cloudbeaver:latest
+        container_name: nounourelou_cloudbeaver
+        restart: unless-stopped
+        ports:
+            - "8081:8978"
+        depends_on:
+            database:
+                condition: service_healthy
+        networks:
+            - nounourelou
+
+    dbgate:
+        image: dbgate/dbgate:latest
+        container_name: nounourelou_dbgate
+        restart: unless-stopped
+        ports:
+            - "8082:3000"
+        depends_on:
+            database:
+                condition: service_healthy
+        networks:
+            - nounourelou
+
+volumes:
+    database_data:
+    redis_data:
+    rabbitmq_data:
+    caddy_data:
+    caddy_config:
+
+networks:
+    nounourelou:

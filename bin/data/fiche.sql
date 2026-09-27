@@ -1,0 +1,1 @@
+INSERT INTO `fiche` (`id`, `date_debut`, `date_fin`, `heures_normal_mensuel`, `heures_majorees_mensuel`, `montant_deduction_periode_abs`, `montant_divers`, `montant_conges`, `conge_date_start`, `conge_date_end`, `prelevement_source_indiquation_paje`) VALUES (2, '2026-08-01 01:48:00', '2026-08-31 01:48:00', 135, 0, 0, 0, 0, '2026-08-01 06:16:12', '2026-08-23 06:16:16', 0);

@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <div class="display-fiches">
+    {% for fiche in fiches %}
+
+        <div class="box-fiche">
+            <div>Date : {{ fiche.dateDebut|date('m-Y') }}</div>
+            <div class="actions-btn">
+                <a class="icon-link icon-download" href="{{ path('app_fichedepaie_edition', {'id': fiche.id}) }}"><twig:ux:icon name="lucide:edit" /></a>
+                {% if fiche.ligneFiches|length > 0 %}
+                    <a class="icon-link icon-download" href="{{ path('app_fichedepaie_download', {'id': fiche.id}) }} }"><twig:ux:icon name="lucide:download" /></a>
+                {% endif %}
+            </div>
+        </div>
+
+    {% endfor %}
+    </div>
+{% endblock %}
